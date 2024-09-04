@@ -8,6 +8,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "rap2hpoutre/laravel-log-viewer": "^2.4",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.9"
     },
