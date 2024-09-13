@@ -22,11 +22,34 @@
         class="avatar">
 
     <h2>Servers:</h2>
-    <ul>
+    {{-- <ul>
         @foreach ($guilds as $guild)
             <li>{{ $guild['name'] }}</li>
         @endforeach
-    </ul>
+    </ul> --}}
 </body>
 
 </html>
+
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Discord Profile') }}
+        </h2>
+    </x-slot>
+
+
+    <div class="">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h2 class="text-2xl font-semibold text-gray-800 leading-tight">{{ __('Your Entered Keywords') }}
+                        "{{ Str::ucfirst(Auth::user()->discord_username) }}"
+                    </h2>
+                    <img src="https://cdn.discordapp.com/avatars/{{ Auth::user()->discord_id }}/{{ $avatar }}.png"
+                        alt="Avatar" class="avatar">
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

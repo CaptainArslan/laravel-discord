@@ -32,6 +32,12 @@
                         </x-nav-link>
                     </div>
                 @endcan
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('discord.connect')" :active="request()->routeIs('discord.connect')">
+                        {{ __('Discord') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -57,19 +63,6 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        @can('see user list')
-                            <x-dropdown-link :href="route('users.index')">
-                                {{ __('Users') }}
-                            </x-dropdown-link>
-                        @endcan
-
-                        @can('see user activity')
-                            <x-dropdown-link :href="route('user.activity')">
-                                {{ __('User Activity') }}
-                            </x-dropdown-link>
-                        @endcan
-
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -120,6 +113,22 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @can('see user list')
+                    <x-responsive-nav-link :href="route('users.index')">
+                        {{ __('Users') }}
+                    </x-responsive-nav-link>
+                @endcan
+
+                @can('see user activity')
+                    <x-responsive-nav-link :href="route('user.activity')">
+                        {{ __('User Activity') }}
+                    </x-responsive-nav-link>
+                @endcan
+                <x-responsive-nav-link :href="route('discord.connect')">
+                    {{ __('Discord') }}
+                </x-responsive-nav-link>
+
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

@@ -28,6 +28,14 @@ class User extends Authenticatable
         'password',
         'self_define_word',
         'self_define_word_synonyms',
+        'discord_data',
+        'discord_id',
+        'discord_guilds',
+        'discord_username',
+        'discord_avatar',
+        'discord_token',
+        'discord_refresh_token',
+        'discord_token_expires',
     ];
 
     public function getActivitylogOptions(): LogOptions
