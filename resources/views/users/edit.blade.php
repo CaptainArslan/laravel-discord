@@ -43,15 +43,24 @@
                                         <x-input-error :messages="$errors->updateUser->get('email')" class="mt-2" />
                                     </div>
 
+                                    <!-- self_define_word -->
+                                    <div>
+                                        <x-input-label for="word" :value="__('Self descriptive word')" />
+                                        <x-text-input id="word" name="self_define_word" type="text"
+                                            value="{{ old('word', $user->self_define_word) }}"
+                                            class="mt-1 block w-full" />
+                                        <x-input-error :messages="$errors->updateUser->get('word')" class="mt-2" />
+                                    </div>
+
                                     <!-- Role -->
                                     <div class="md:col-span-2">
                                         <x-input-label for="roles" :value="__('Roles')" />
-                                        <select id="roles" name="roles[]" multiple
+                                        <select id="roles" name="roles[]"
                                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                             @foreach ($roles as $role)
                                                 <option value="{{ $role->name }}"
                                                     {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                                    {{ $role->name }}
+                                                    {{ ucfirst($role->name) }}
                                                 </option>
                                             @endforeach
                                         </select>

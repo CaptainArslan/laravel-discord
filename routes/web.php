@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiscordController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -17,8 +18,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', UserController::class);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/activity', [DashboardController::class, 'activity'])->name('dashboard.activity');
+    Route::get('user/activity', [DashboardController::class, 'activity'])->name('user.activity');
+    Route::delete('/activity/{id}', [DashboardController::class, 'destroyActivity'])->name('activity.destroy');
 
+
+    Route::get('auth/discord', [DiscordController::class, 'redirectToDiscord']);
+    Route::get('auth/discord/callback', [DiscordController::class, 'handleDiscordCallback']);
+    Route::get('discord/profile',  [DiscordController::class, 'profile']);
 });
 
 require __DIR__ . '/auth.php';

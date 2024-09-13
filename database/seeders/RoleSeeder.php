@@ -15,6 +15,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
 
+        Permission::create(['name' => 'see user list']);
         Permission::create(['name' => 'create user']);
         Permission::create(['name' => 'edit user']);
         Permission::create(['name' => 'delete user']);
@@ -27,9 +28,12 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'edit permission']);
         Permission::create(['name' => 'delete permission']);
         Permission::create(['name' => 'view permission']);
+        Permission::create(['name' => 'see user activity']);
+        Permission::create(['name' => 'delete activity']);
 
         $role = Role::create(['name' => 'admin']);
         $role->syncPermissions([
+            'see user list',
             'create user',
             'edit user',
             'delete user',
@@ -42,16 +46,21 @@ class RoleSeeder extends Seeder
             'edit permission',
             'delete permission',
             'view permission',
+            'see user activity',
+            'delete activity',
         ]);
 
         $role = Role::create(['name' => 'moderator']);
         $role->syncPermissions([
+            'see user list',
+            'create user',
             'view user',
+            'see user activity',
         ]);
 
         $role = Role::create(['name' => 'basic']);
-        $role->syncPermissions([
-            'view user',
-        ]);
+        // $role->syncPermissions([
+        //     'view user',
+        // ]);
     }
 }

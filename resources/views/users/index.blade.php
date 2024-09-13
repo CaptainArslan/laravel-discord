@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Users List') }}
         </h2>
     </x-slot>
 
@@ -18,6 +18,10 @@
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">
                                     Email
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">
+                                    Self descroptions
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">
@@ -39,9 +43,15 @@
                                         {{ $user->email }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $user->self_define_word ? Str::ucfirst($user->self_define_word) : 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <span
                                             class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                                            {{ $user->getRoleNames()->implode(', ') }}
+                                            {{ $user->getRoleNames()->map(function ($role) {
+                                                    return ucfirst($role);
+                                                })->implode(', ') }}
+
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

@@ -29,9 +29,17 @@ class UserSeeder extends Seeder
 
         $user->assignRole('basic');
 
+        $user = User::create([
+            'name' => 'Moderatore',
+            'email' => 'moderator@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $user->assignRole('moderator');
+
 
         User::factory(1000)->create()->each(function ($user) {
-            $user->assignRole(['moderator', 'basic']);
+            $user->assignRole(['basic']);
         });
     }
 }
