@@ -9,6 +9,7 @@ class DashboardController extends Controller
     public function index()
     {
         activity()->log('Dashboard page visited');
-        return view('dashboard');
+        $user = auth()->user();
+        return view('dashboard', get_defined_vars());
     }
 }

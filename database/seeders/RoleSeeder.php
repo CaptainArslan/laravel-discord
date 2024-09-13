@@ -44,7 +44,12 @@ class RoleSeeder extends Seeder
             'view permission',
         ]);
 
-        $role = Role::create(['name' => 'user']);
+        $role = Role::create(['name' => 'moderator']);
+        $role->syncPermissions([
+            'view user',
+        ]);
+
+        $role = Role::create(['name' => 'basic']);
         $role->syncPermissions([
             'view user',
         ]);

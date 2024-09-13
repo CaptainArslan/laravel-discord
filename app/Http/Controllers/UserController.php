@@ -13,7 +13,14 @@ class UserController extends Controller
     public function index()
     {
         activity()->log('Dashboard page visited');
-        $users = User::role('user')->where('id', '!=', Auth::id())->with('roles')->paginate(50);
+        $users = User::where('id', '!=', Auth::id())
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'basic')
+                    ->orWhere('name', 'moderator');
+            })
+            ->with('roles')
+            ->paginate(50);
+
         return view('users.index', compact('users'));
     }
 
@@ -51,13 +58,22 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'required',
+            'password' => 'nullable|min:6', // Make password optional
         ]);
 
-        $user->update($request->all());
+        // Only update the password if it's provided
+        $data = $request->only('name', 'email');
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
+        // Sync the roles (expects the role IDs from the form)
+        $user->syncRoles($request->roles);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
+
 
     public function destroy(User $user)
     {

@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'self_define_word',
+        'self_define_word_synonyms',
     ];
 
     /**

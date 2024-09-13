@@ -49,7 +49,7 @@
                                         <select id="roles" name="roles[]" multiple
                                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                             @foreach ($roles as $role)
-                                                <option value="{{ $role->id }}"
+                                                <option value="{{ $role->name }}"
                                                     {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '' }}>
                                                     {{ $role->name }}
                                                 </option>

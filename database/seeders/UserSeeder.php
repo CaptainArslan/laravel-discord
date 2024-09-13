@@ -27,11 +27,11 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $user->assignRole('user');
+        $user->assignRole('basic');
 
 
         User::factory(1000)->create()->each(function ($user) {
-            $user->assignRole('user');
+            $user->assignRole(['moderator', 'basic']);
         });
     }
 }
