@@ -27,57 +27,6 @@ class DiscordController extends Controller
             ->redirect();
     }
 
-    public function handleDiscordCallback()
-    {
-        try {
-            $discordUser = Socialite::driver('discord')->user();
-            $token = $discordUser->token;
-
-            // Fetch user data from Discord
-            $client = new Client();
-            $response = $client->request('GET', 'https://discord.com/api/v10/users/@me', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-            ]);
-            $userData = json_decode($response->getBody(), true);
-
-            // Fetch guilds data from Discord
-            $responseGuilds = $client->request('GET', 'https://discord.com/api/v10/users/@me/guilds', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                ],
-            ]);
-            $guildsData = json_decode($responseGuilds->getBody(), true);
-
-            // Store or update user in the database
-            $user = User::updateOrCreate(
-                ['discord_id' => $userData['id']],
-                [
-                    'discord_username' => $userData['username'],
-                    'discord_avatar' => $userData['avatar'],
-                    'discord_token' => $token,
-                    'discord_refresh_token' => $discordUser->refreshToken,
-                    'discord_token_expires' => now()->addSeconds($discordUser->expiresIn),
-                ]
-            );
-
-            Auth::login($user);
-
-            // Pass user data and guilds to the view
-            return view('discord.profile', [
-                'username' => $userData['username'],
-                'avatar' => $userData['avatar'],
-                'guilds' => $guildsData,
-            ]);
-        } catch (InvalidStateException $e) {
-            // Handle the InvalidStateException
-            return to_route('dashboard')->withErrors('OAuth state mismatch. Please try again.');
-        } catch (\Exception $e) {
-            // Handle other exceptions
-            return to_route('dashboard')->withErrors('Unable to authenticate with Discord: ' . $e->getMessage());
-        }
-    }
 
     public function handleProviderCallback()
     {
@@ -114,11 +63,7 @@ class DiscordController extends Controller
             $user->discord_guilds = json_encode($guildsData);
             $user->save();
 
-            return view('discord.profile', [
-                'username' => $userData['username'],
-                'avatar' => $userData['avatar'],
-                // 'guilds' => $guildsData,
-            ]);
+            return view('discord.connect', get_defined_vars());
         } catch (\Exception $e) {
             return to_route('discord.connect')->withErrors('Unable to authenticate with Discord: ' . $e->getMessage());
         }

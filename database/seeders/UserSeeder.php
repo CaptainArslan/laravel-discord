@@ -38,8 +38,8 @@ class UserSeeder extends Seeder
         $user->assignRole('moderator');
 
 
-        User::factory(1000)->create()->each(function ($user) {
-            $user->assignRole(['basic']);
-        });
+        // User::factory(1000)->create()->each(function ($user) {
+        //     $user->assignRole(['basic']);
+        // });
     }
 }

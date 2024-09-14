@@ -99,16 +99,14 @@ class UserController extends Controller
 
         if ($request->filled('self_define_word')) {
             $data['self_define_word'] = $request->self_define_word;
-            if ($user->self_define_word != $request->self_define_word) {
-                try {
-                    $this->getSynonyms($request->self_define_word, $user);
-                } catch (\Throwable $th) {
-                    Log::error('Error fetching synonyms: ' . $th->getMessage());
-                }
-            }
         }
 
         $user->update($data);
+        try {
+            $this->getSynonyms($request->self_define_word, $user);
+        } catch (\Throwable $th) {
+            Log::error('Error fetching synonyms: ' . $th->getMessage());
+        }
         $user->syncRoles($request->roles);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');

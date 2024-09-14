@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->after('password', function ($table) {
                 $table->text('discord_data')->nullable();
-                $table->string('discord_id')->nullable()->unique();
+                $table->string('discord_id')->nullable();
                 $table->string('discord_username')->nullable();
                 $table->string('discord_avatar')->nullable();
                 $table->text('discord_guilds')->nullable();
