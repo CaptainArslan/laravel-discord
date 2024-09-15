@@ -18,9 +18,10 @@ class UserController extends Controller
             ->withProperties([
                 'page' => 'User List',
                 'action' => 'visited',
+                'url' => request()->fullUrl(),
                 'ip' => request()->ip(),
             ])
-            ->log('User visited their profile page'); // Custom log message
+            ->log('User visited the user list page');
 
         $users = User::where('id', '!=', Auth::id())
             ->whereHas('roles', function ($query) {
@@ -41,6 +42,17 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'User Create',
+                'action' => 'created',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('User created a new user');
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -59,9 +71,10 @@ class UserController extends Controller
             ->withProperties([
                 'page' => 'User Profile',
                 'action' => 'visited',
+                'url' => request()->fullUrl(),
                 'ip' => request()->ip(),
             ])
-            ->log('User visited their profile page'); // Custom log message
+            ->log('User visited the profile page');
 
         return view('users.show', compact('user'));
     }
@@ -71,11 +84,12 @@ class UserController extends Controller
         activity()
             ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
             ->withProperties([
-                'page' => 'User Profile',
+                'page' => 'User Edit',
                 'action' => 'visited',
+                'url' => request()->fullUrl(),
                 'ip' => request()->ip(),
             ])
-            ->log('User visited their profile page'); // Custom log message
+            ->log('User visited the edit page');
 
         $roles = Role::all();
         return view('users.edit', get_defined_vars());
@@ -91,6 +105,7 @@ class UserController extends Controller
             'self_define_word' => 'nullable',
         ]);
 
+
         // Only update the password if it's provided
         $data = $request->only('name', 'email');
         if ($request->filled('password')) {
@@ -102,6 +117,17 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'User Edit',
+                'action' => 'updated',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('User updated the user profile');
+
         try {
             $this->getSynonyms($request->self_define_word, $user);
         } catch (\Throwable $th) {
@@ -116,6 +142,16 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'User Delete',
+                'action' => 'deleted',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('User deleted a user');
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }

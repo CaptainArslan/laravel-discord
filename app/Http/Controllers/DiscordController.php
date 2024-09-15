@@ -15,6 +15,17 @@ class DiscordController extends Controller
 
     public function connect()
     {
+
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'Connect Discord page',
+                'action' => 'visited',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('User visited the discord connection page');
+
         $user = Auth::user();
         $guildsData = json_decode($user->discord_guilds, true);
         return view('discord.connect', get_defined_vars());
@@ -22,6 +33,16 @@ class DiscordController extends Controller
 
     public function redirectToDiscord()
     {
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'Connect Discord page',
+                'action' => 'visited',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('User try to connect with Discord');
+
         return Socialite::driver('discord')
             ->scopes(['identify', 'guilds']) // Adding 'guilds' scope here
             ->redirect();
@@ -30,6 +51,17 @@ class DiscordController extends Controller
 
     public function handleProviderCallback()
     {
+
+        activity()
+            ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+            ->withProperties([
+                'page' => 'Connect Discord page',
+                'action' => 'visited',
+                'url' => request()->fullUrl(),
+                'ip' => request()->ip(),
+            ])
+            ->log('Discord callback handling');
+
         try {
             $discordUser = Socialite::driver('discord')->user();
             $token = $discordUser->token;
