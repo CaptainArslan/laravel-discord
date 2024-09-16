@@ -76,6 +76,9 @@ class UserController extends Controller
             ])
             ->log('User visited the profile page');
 
+
+
+
         return view('users.show', compact('user'));
     }
 
@@ -91,12 +94,39 @@ class UserController extends Controller
             ])
             ->log('User visited the edit page');
 
+        if (!Auth::user()->can('edit user', $user)) {
+            // Redirect or abort if permission is not granted
+            activity()
+                ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+                ->withProperties([
+                    'page' => 'User Edit',
+                    'action' => 'visited',
+                    'url' => request()->fullUrl(),
+                    'ip' => request()->ip(),
+                ])
+                ->log('User tried to access unauthorized page');
+            return abort(403, 'Unauthorized action.');
+        }
+
         $roles = Role::all();
         return view('users.edit', get_defined_vars());
     }
 
     public function update(Request $request, User $user)
     {
+        if (!Auth::user()->can('edit user', $user)) {
+            // Redirect or abort if permission is not granted
+            activity()
+                ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+                ->withProperties([
+                    'page' => 'User Edit',
+                    'action' => 'visited',
+                    'url' => request()->fullUrl(),
+                    'ip' => request()->ip(),
+                ])
+                ->log('User tried to access unauthorized page');
+            return abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -104,6 +134,7 @@ class UserController extends Controller
             'roles' => 'required|array',
             'self_define_word' => 'nullable',
         ]);
+
 
 
         // Only update the password if it's provided
@@ -117,6 +148,7 @@ class UserController extends Controller
         }
 
         $user->update($data);
+        $user->syncRoles($request->roles);
 
         activity()
             ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
@@ -133,14 +165,27 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             Log::error('Error fetching synonyms: ' . $th->getMessage());
         }
-        $user->syncRoles($request->roles);
-
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
 
     public function destroy(User $user)
     {
+
+        if (!Auth::user()->can('delete user', $user)) {
+            // Redirect or abort if permission is not granted
+            activity()
+                ->performedOn(Auth::check() ? User::find(Auth::id()) : null)
+                ->withProperties([
+                    'page' => 'User Edit',
+                    'action' => 'visited',
+                    'url' => request()->fullUrl(),
+                    'ip' => request()->ip(),
+                ])
+                ->log('User tried to access unauthorized page');
+            return abort(403, 'Unauthorized action.');
+        }
+
         $user->delete();
 
         activity()

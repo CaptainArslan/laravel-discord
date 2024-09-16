@@ -25,6 +25,10 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">
+                                        Ip Address
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider">
                                         Subject Type & ID
                                     </th>
                                     <th scope="col"
@@ -39,6 +43,9 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($activities as $activity)
+                                    @php
+                                        $properties = json_decode($activity->properties);
+                                    @endphp
                                     <tr class="{{ $loop->even ? 'bg-gray-50' : '' }}"> <!-- Apply striped rows -->
                                         <!-- User Column -->
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -47,7 +54,13 @@
 
                                         <!-- Description Column -->
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ ucfirst($activity->description) }}
+                                            {{ $properties->action }} the page {{ $properties->page }}<br>
+                                            <span class="text-xs text-gray-400">{{ $properties->url }} </span>
+                                        </td>
+
+                                        <!-- IP Address Column -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $properties->ip }}
                                         </td>
 
                                         <!-- Subject Type & ID Column -->

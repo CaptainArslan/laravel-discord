@@ -19,15 +19,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $admin->assignRole('admin');
-
-        $user = User::create([
-            'name' => 'User',
-            'email' => 'user@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        $user->assignRole('basic');
+        $admin->assignRole(['admin', 'moderator', 'basic']);
 
         $user = User::create([
             'name' => 'Moderatore',
@@ -37,9 +29,25 @@ class UserSeeder extends Seeder
 
         $user->assignRole('moderator');
 
+        $user = User::create([
+            'name' => 'Ramsha Altaf',
+            'email' => 'rimsha@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
 
-        // User::factory(1000)->create()->each(function ($user) {
-        //     $user->assignRole(['basic']);
-        // });
+        $user->assignRole('moderator');
+
+        $user = User::create([
+            'name' => 'User',
+            'email' => 'user@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $user->assignRole('basic');
+
+
+        User::factory(200)->create()->each(function ($user) {
+            $user->assignRole(['basic']);
+        });
     }
 }
